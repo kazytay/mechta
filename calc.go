@@ -2,7 +2,9 @@ package mechta
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -12,6 +14,13 @@ type numbers struct {
 }
 
 func Calc(pathToFile string, goroutines int) (int, error) {
+	if strings.TrimSpace(pathToFile) == "" {
+		return 0, errors.New("pathToFile cannot be empty")
+	}
+	if goroutines < 1 {
+		return 0, errors.New("goroutines cannot be less than 1")
+	}
+
 	nums, err := getNumbers(pathToFile)
 	if err != nil {
 		return 0, err
