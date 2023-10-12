@@ -11,10 +11,10 @@ type numbers struct {
 	B int `json:"b"`
 }
 
-func Calc(goroutines int) (*int, error) {
-	nums, err := getNumbers()
+func Calc(pathToFile string, goroutines int) (int, error) {
+	nums, err := getNumbers(pathToFile)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	var wg sync.WaitGroup
@@ -37,8 +37,7 @@ func Calc(goroutines int) (*int, error) {
 		close(sums)
 	}()
 
-	total := getTotal(sums)
-	return &total, nil
+	return getTotal(sums), nil
 }
 
 func worker(wg *sync.WaitGroup, nums []numbers, sums chan int) {
@@ -58,8 +57,8 @@ func getTotal(sums chan int) (total int) {
 	return
 }
 
-func getNumbers() (nums []numbers, err error) {
-	f, err := os.Open("numbers.json")
+func getNumbers(path string) (nums []numbers, err error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return
 	}
